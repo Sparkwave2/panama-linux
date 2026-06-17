@@ -3,15 +3,43 @@
 # image will be published to ghcr.io/<user>/<name>
 name: panama-linux
 # description will be included in the image's metadata
-description: This is my personal OS image.
+description: A Fedora Kinoite based OS meant as an alternative to Bazzite.
 
 # the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 42 # latest is also supported if you want new updates ASAP
+base-image: ghcr.io/ublue-os/kinoite-nvidia
+image-version: latest # latest is also supported if you want new updates ASAP
+
+platforms:
+  - linux/amd64
+  - linux/arm
 
 # module configuration, executed in order
 # you can include multiple instances of the same module
 modules:
+  - type: akmods
+    base: bazzite
+    install:
+      - openrazer
+      - wl
+      - xone
+      - xpadneo
+      - evdi
+      - gcadapter_oc
+      - hid-fanatecff
+      - hid-tmff2
+      - kvmfr
+      - new-lg4ff
+      - ryzen-smu
+      - sc0710
+      - t150-driver
+      - zenergy
+      - zfs
+      - framework-laptop
+      - system76
+      - system76-io
+      - nvidia-open
+    nvidia-driver:
+      - nvidia-open
   - type: files
     files:
       - source: system
@@ -21,10 +49,18 @@ modules:
     repos:
       copr:
         - atim/starship
+      nonfree: rpmfusion
     install:
       packages:
         - micro
         - starship
+        - steam # We want native Steam as opposed to a Flatpak
+        - ffmpeg
+        - bootc
+        - pipewire # We do not want Pulseaudio
+        - pipewire-pulseaudio
+        - tigervnc-server # We want this but without a password, for a user to set it up later
+        - zsh
     remove:
       packages:
         # example: removing firefox (in favor of the flatpak)
@@ -32,14 +68,49 @@ modules:
         - firefox
         - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
 
+  - type: kargs
+    kargs:
+      - amd_iommu=pgtbl_v2 # Try to use better IOMMU pagetable
+      - mitigations=off # Sacrifice a little bit of edge case security for performance
+      - amdgpu.ppfeaturemask=0xffffffff # Enable all AMD GPU PowerPlay features
+      - nvidia-drm.modeset=1 # Enable Nvidia Wayland stuff
+      - transparent_hugepage=madvise # Let apps opt into huge pages instead of system-wide
+
   - type: default-flatpaks
     configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
+      - notify: false # Send notification after install/uninstall is finished (true/false)
         scope: system
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
-          - org.mozilla.firefox
-          - org.gnome.Loupe
+          - net.waterfox.waterfox # Not normal Firefox
+          - com.github.tchx84.Flatseal # For managing flatpak permissions
+          - org.libretro.RetroArch # For emulation (obviously)
+          - net.lutris.Lutris # For installing extra apps
+          - dev.vencord.Vesktop # Not normal Discord, but instead this
+          - com.vscodium.codium # Not normal vscode, but still essential
+          - net.davidotek.pupgui2 # ProtonUp Qt
       - scope: user # Also add Flathub user repo, but no user packages
+
+  - type: os-release
+    properties:
+      ID: panama_linux
+      NAME: PanamaLinux
+      PRETTY_NAME: Panama Linux
+  
+  - type: fonts
+    fonts:
+      nerd-fonts:
+        - CaskaydiaCove
+        - CaskaydiaMono
+        - ComicShannsMono # Little surprise
+        - FiraCode
+        - FiraMono
+        - OpenDyslexic
+      google-fonts:
+        - Exo 2
+
+  - type: script
+    snippets:
+      - "chsh -s $(which zsh)" # Set zsh as default shell
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
