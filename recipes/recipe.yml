@@ -38,8 +38,6 @@ modules:
       - system76
       - system76-io
       - nvidia-open
-    nvidia-driver:
-      - nvidia-open
   - type: files
     files:
       - source: system

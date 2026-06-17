@@ -1,8 +1,24 @@
-# panama-linux &nbsp; [![bluebuild build badge](https://github.com/sparkwave2/panama-linux/actions/workflows/build.yml/badge.svg)](https://github.com/sparkwave2/panama-linux/actions/workflows/build.yml)
+# Panama Linux &nbsp; [![bluebuild build badge](https://github.com/sparkwave2/panama-linux/actions/workflows/build.yml/badge.svg)](https://github.com/sparkwave2/panama-linux/actions/workflows/build.yml)
 
-See the [BlueBuild docs](https://blue-build.org/how-to/setup/) for quick setup instructions for setting up your own repository based on this template.
+Panama is a Fedora Kinoite-based atomic Linux distro made with BlueBuild. It's meant to be an alternative to Bazzite.
 
-After setup, it is recommended you update this README to describe your custom image.
+Supports amd64 and ARM. Requires an AMD, Intel or modern Nvidia GPU.
+
+List of features:
+- KDE Plasma desktop
+- Steam preinstalled natively
+- Includes Waterfox, Flatseal, Lutris, RetroArch, VSCodium, Vesktop and ProtonUp Qt flatpaks by default
+- Includes Cascadia Code, Fira Code and OpenDyslexic fonts by default
+- Bazzite kernel with various gaming improvements
+- Customized kernel flags for gaming performance
+- Openrazer driver for Razer devices
+- Drivers for various gaming peripherals
+- Drivers for Framework and System76 laptop hardware
+- Improved Xbox controller support
+- Nvidia open kernel driver preinstalled
+- Pipewire, a flexible and improved sound engine
+- ZSH, an improved terminal shell
+- TigerVNC Server for VNC uses, disabled by default
 
 ## Installation
 
